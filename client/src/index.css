@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  input {
+    @apply w-full  bg-slate-100 mb-4 p-2 rounded outline-none;
+  }
+}
