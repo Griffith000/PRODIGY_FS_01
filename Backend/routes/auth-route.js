@@ -1,7 +1,8 @@
 // Initilize express router
-const authRoutes = require("express").Router();
+const express = require("express");
+const authRoutes = express.Router();
 const signup = require("../controllers/auth-controller");
 
-authRoutes.post("/api/signup", signup);
+authRoutes.post("/signup", signup);
 
 module.exports = authRoutes;

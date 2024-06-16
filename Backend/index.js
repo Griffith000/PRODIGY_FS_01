@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/user-route");
 const authRoutes = require("./routes/auth-route");
+const customError = require("./utils/error");
+const cors = require("cors");
 dotenv.config();
 const app = express();
 
@@ -19,9 +21,10 @@ app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-app.use("/api/user", userRoutes);
+app.use(cors());
 app.use(express.json());
-app.post("/api/signup", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
