@@ -1,5 +1,7 @@
 import React from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+
 const SignUp = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
@@ -11,6 +13,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(false);
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -25,6 +28,7 @@ const SignUp = () => {
         setError(true);
       }
     } catch (error) {
+      console.log(error);
       setError(true);
     }
     setLoading(false);
@@ -36,7 +40,7 @@ const SignUp = () => {
         className="flex flex-col justify-center items-center max-w-md mx-auto my-auto "
       >
         <div className="text-4xl m-7 font-semibold text-slate-700 text-center  ">
-          SignUp
+          Sign Up
         </div>
         <input
           onChange={handleChange}
@@ -60,16 +64,16 @@ const SignUp = () => {
           disabled={loading}
           className=" w-full bg-slate-600 hover:bg-slate-500 text-white font-bold mb-4 py-3 px-8 rounded hover:transition duration-100 disabled:opacity-80"
         >
-          {loading ? "Loading..." : "SignUp"}
+          {loading ? "Loading..." : "Sign Up"}
         </button>
         <p className="self-start">
           already have an account{" "}
-          <a
-            href="/signIn"
+          <Link
+            to="/signIn"
             className="text-blue-600 underline hover:text-violet-800 transition duration-100"
           >
             signIn
-          </a>
+          </Link>
         </p>
       </form>
       <p className="text-red-600 m-3 text-center">

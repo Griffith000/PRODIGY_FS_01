@@ -28,12 +28,11 @@ const signin = async (req, res, next) => {
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     let expiryDate = new Date(Number(new Date()) + 60 * 60 * 1000); // 1 hour from now
-    res.cookie("token", token, { httpOnly: true, expires: expiryDate }).status(200).json({ user, message: "User signed in successfully" });
+res.cookie("token", token, { httpOnly: true, expires: expiryDate }).status(200).json({ user:user, message: "User signed in successfully" });
     //{httpOnly:true} prevents access to the token from the client side third party app also
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = signup;
-module.exports = signin;
+module.exports = { signup ,signin };
