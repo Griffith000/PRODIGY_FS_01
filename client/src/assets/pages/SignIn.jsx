@@ -1,20 +1,25 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  signInStart,
+  signInSuccess,
+  signInFail,
+} from "../../redux/user/userSlice.js";
+import { useDispatch, useSelector } from "react-redux";
 
-const SignIp = () => {
+const SignIn = () => {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
-
+  const { loading, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(false);
     try {
+      dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -25,13 +30,14 @@ const SignIp = () => {
       const data = await res.json();
       console.log(data);
       if (data.success === false) {
-        setError(true);
+        dispatch(signInFail(data.message));
+        return;
       }
+      dispatch(signInSuccess(data));
+      navigate("/");
     } catch (error) {
-      console.log(error);
-      setError(true);
+      dispatch(signInFail(error));
     }
-    setLoading(false);
   };
   return (
     <div>
@@ -42,7 +48,7 @@ const SignIp = () => {
         <div className="text-4xl m-7 font-semibold text-slate-700 text-center  ">
           Sign In
         </div>
-       
+
         <input
           onChange={handleChange}
           id="email"
@@ -71,11 +77,13 @@ const SignIp = () => {
           </Link>
         </p>
       </form>
-      <p className="text-red-600 m-3 text-center">
-        {error && "Something went wrong!"}
-      </p>
+      {error && (
+        <p className="text-red-600 m-3 text-center">
+          Something went wrong: {error}
+        </p>
+      )}
     </div>
   );
 };
 
-export default SignIp;
+export default SignIn;

@@ -1,12 +1,12 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -26,12 +26,16 @@ const SignUp = () => {
       console.log(data);
       if (data.success === false) {
         setError(true);
+        return;
       }
+      navigate("/signin");
     } catch (error) {
       console.log(error);
       setError(true);
     }
+    finally{
     setLoading(false);
+    }
   };
   return (
     <div>
@@ -77,7 +81,7 @@ const SignUp = () => {
         </p>
       </form>
       <p className="text-red-600 m-3 text-center">
-        {error && "Something went wrong!"}
+        {error ? "Something went wrong!" : ""}
       </p>
     </div>
   );
