@@ -7,6 +7,7 @@ import {
   signInFail,
 } from "../../redux/user/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../../components/OAuth.jsx";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
@@ -63,10 +64,11 @@ const SignIn = () => {
         />
         <button
           disabled={loading}
-          className=" w-full bg-slate-600 hover:bg-slate-500 text-white font-bold mb-4 py-3 px-8 rounded hover:transition duration-100 disabled:opacity-80"
+          className=" w-full bg-slate-600 hover:bg-slate-500 text-white uppercase mb-4 py-3 px-8 rounded hover:transition duration-100 disabled:opacity-80"
         >
           {loading ? "Loading..." : "Sign In"}
         </button>
+        <OAuth />
         <p className="self-start">
           Dont have an account{" "}
           <Link

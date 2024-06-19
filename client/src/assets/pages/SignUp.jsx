@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Link ,useNavigate} from "react-router-dom";
+import OAuth from "../../components/OAuth";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
@@ -66,10 +67,11 @@ const SignUp = () => {
         />
         <button
           disabled={loading}
-          className=" w-full bg-slate-600 hover:bg-slate-500 text-white font-bold mb-4 py-3 px-8 rounded hover:transition duration-100 disabled:opacity-80"
+          className="w-full bg-slate-600 hover:bg-slate-500 text-white uppercase mb-4 py-3 px-8 rounded hover:transition duration-100 disabled:opacity-80"
         >
           {loading ? "Loading..." : "Sign Up"}
         </button>
+        <OAuth />
         <p className="self-start">
           already have an account{" "}
           <Link

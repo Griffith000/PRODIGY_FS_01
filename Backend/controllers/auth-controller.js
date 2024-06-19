@@ -35,4 +35,29 @@ res.cookie("token", token, { httpOnly: true, expires: expiryDate }).status(200).
   }
 };
 
-module.exports = { signup ,signin };
+const  googleOAuth = async (req, res, next) => {
+  const { name, email, photoURL } = req.body;
+
+  try {
+   const user = await User.findOne({email : req.body.email});
+    if(user){ 
+      const token = jwt.sign({id: user._id} , process.env.JWT_SECRET);
+      let expiryDate = new Date(Number(new Date()) + 60 * 60 * 1000); // 1 hour from now
+      res.cookie("token", token, { httpOnly: true, expires: expiryDate }).status
+      (200).json({ user:user, message: "User signed in successfully" });
+      await user.save();
+    }
+   else{
+    const generatedPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+    const newUser = new User({username: name.split(' ').join('').lowerCase() + Math.floor(Math.random() *1000).toString() , email ,password: hashedPassword, profilePicture: photoURL});
+    await newUser.save();
+    const token = jwt.sign({id: newUser._id} , process.env.JWT_SECRET);
+    let expiryDate = new Date(Number(new Date()) + 60 * 60 * 1000); // 1 hour from now
+    res.cookie("token", token , {httpOnly:true , expires:expiryDate}).status(200).json({user:newUser , message: "User signed in successfully"});
+   }
+  } catch (error) {
+    next(error);
+  }
+}
+module.exports = { signup ,signin , googleOAuth};
