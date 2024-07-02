@@ -1,4 +1,4 @@
-const costumError = require("../utils/error");
+const customError = require("../utils/error");
 const User = require("../models/user-model");
 const bcryptjs = require("bcryptjs");
 const test = (req, res) => {
@@ -7,7 +7,7 @@ const test = (req, res) => {
 
 const updateUser = async (req, res,next) => {
   if(req.user.id !== req.params.id){
-    return next(costumError( 401,"Unauthorized"));
+    return next(customError( 401,"Unauthorized"));
   }
   try{
     if(req.body.password){

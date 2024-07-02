@@ -8,12 +8,19 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../../firebase";
+import {useDispatch} from "react-redux";
+import { updateUserStart, updateUserSuccess,updateUserFail } from "../../redux/user/userSlice";
+
 const Profile = () => {
-  const currentUser = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
+  const currentUser  = useSelector((state) => state.user.user);
+  const loading = useSelector((state) => state.user.loading);
+  const error = useSelector((state) => state.user.error);
   const [image, setImage] = useState(undefined);
   const [imgPercent, setImgPercent] = useState(0);
   const [imgError, setImgError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [updateWorks, setUpdateWorks] = useState(false);
 
   const fileRef = useRef();
   useEffect(() => {
@@ -45,16 +52,43 @@ const Profile = () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setFormData({...formData,profilePicture: downloadURL
         });
-          console.log("Image uploaded successfully: ", downloadURL);
         });
       }
     );
   };
+const handleUpdate = (e) => {
+  setFormData({ ...formData, [e.target.id]: e.target.value });
+};
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    dispatch(updateUserStart());
+    const res = await fetch(`/api/user/update/${currentUser._id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+    const data = await res.json();
+    console.log(data);
+    if (data.success === false) {
+      dispatch(updateUserFail(data));
+      return;
+  } 
+    dispatch(updateUserSuccess(data));
+  
+    setUpdateWorks(true);
+}catch (err) {
+    dispatch(updateUserFail(err));
+    console.error("Error sending formData:", err);
+  }
+};
   return (
     <div>
       <div className="font-semibold text-4xl text-center mt-10">Profile</div>
-      <form className="mx-auto flex flex-col max-w-lg" action="">
+      <form  onSubmit={handleSubmit} className="mx-auto flex flex-col max-w-lg" action="">
         <input
           type="file"
           ref={fileRef}
@@ -73,7 +107,7 @@ const Profile = () => {
         <img
           className="h-20 w-20 rounded-full self-center m-3 cursor-pointer object-cover "
           onClick={() => fileRef.current.click()}
-          src={formData.profilePicture || currentUser.profilePicture}
+          src={ currentUser.profilePicture || formData.profilePicture}
           alt="Profile Picture"
         />
         <div className="text-red-700 text-center m-2">
@@ -91,24 +125,26 @@ const Profile = () => {
             " "
           )}
         </div>
-        <input
+        <input onChange={handleUpdate}
           defaultValue={currentUser.username}
           type="text"
           placeholder="Username"
         />
-        <input
+        <input onChange={handleUpdate}
           defaultValue={currentUser.email}
           type="email"
           placeholder="Email"
         />
-        <input type="password" placeholder="Password" />
-        <button className="bg-slate-600 text-white rounded p-2 self-center w-full uppercase">
-          Update
+        <input onChange={handleUpdate} type="password" placeholder="Password" />
+        <button type="submit" className="bg-slate-600 text-white rounded p-2 self-center w-full uppercase">
+        { loading ? "Loading..." : "Update"}
         </button>
         <div className="flex justify-between m-2 text-red-700">
           <button className="">Delete account</button>
           <button className="rounded p-2 self-center w-1/4">Sign Out</button>
         </div>
+        <p className="text-red-600 ">{error && "Something went wrong!"}</p>
+        <p className="text-green-600 ">{updateWorks && "User updated successfully"}</p>
       </form>
     </div>
   );
