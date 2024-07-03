@@ -25,8 +25,8 @@ app.listen(3000, () => {
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;

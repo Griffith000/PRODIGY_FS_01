@@ -8,12 +8,22 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../../firebase";
-import {useDispatch} from "react-redux";
-import { updateUserStart, updateUserSuccess,updateUserFail } from "../../redux/user/userSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFail,
+  deleteUserFail,
+  deleteUserStart,
+  deleteUserSuccess,
+  signOut,
+} from "../../redux/user/userSlice";
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const currentUser  = useSelector((state) => state.user.user);
+  const navigate = useNavigate();
+  const currentUser = useSelector((state) => state.user.user);
   const loading = useSelector((state) => state.user.loading);
   const error = useSelector((state) => state.user.error);
   const [image, setImage] = useState(undefined);
@@ -40,7 +50,7 @@ const Profile = () => {
         // Progress callback
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setImgPercent(progress.toFixed(2));
+        setImgPercent(progress.toFixed(2));
       },
       (error) => {
         // Error callback
@@ -50,45 +60,69 @@ const Profile = () => {
       () => {
         // Completion callback
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setFormData({...formData,profilePicture: downloadURL
-        });
+          setFormData({ ...formData, profilePicture: downloadURL });
         });
       }
     );
   };
-const handleUpdate = (e) => {
-  setFormData({ ...formData, [e.target.id]: e.target.value });
-};
+  const handleUpdate = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFail(data));
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      setUpdateWorks(true);
+    } catch (err) {
+      dispatch(updateUserFail(err));
+      console.error("Error sending formData:", err);
+    }
+  };
+  const handleDelete = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFail(data));
+        return;
+      }
+      dispatch(deleteUserSuccess());
+      navigate("/");
+    } catch (err) {
+      dispatch(deleteUserFail(err));
+      console.error("Error deleting user:", err);
+    }
+  };
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOut());
+      await fetch("/api/auth/signout");
+      navigate("/signin");
+    } catch (err) {
+      console.error("Error signing out:", err);
+    }
+  };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    dispatch(updateUserStart());
-    const res = await fetch(`/api/user/update/${currentUser._id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-    const data = await res.json();
-    console.log(data);
-    if (data.success === false) {
-      dispatch(updateUserFail(data));
-      return;
-  } 
-    dispatch(updateUserSuccess(data));
-  
-    setUpdateWorks(true);
-}catch (err) {
-    dispatch(updateUserFail(err));
-    console.error("Error sending formData:", err);
-  }
-};
   return (
     <div>
       <div className="font-semibold text-4xl text-center mt-10">Profile</div>
-      <form  onSubmit={handleSubmit} className="mx-auto flex flex-col max-w-lg" action="">
+      <form onSubmit={handleSubmit} className="mx-auto flex flex-col max-w-lg">
         <input
           type="file"
           ref={fileRef}
@@ -107,7 +141,7 @@ const handleSubmit = async (e) => {
         <img
           className="h-20 w-20 rounded-full self-center m-3 cursor-pointer object-cover "
           onClick={() => fileRef.current.click()}
-          src={ currentUser.profilePicture || formData.profilePicture}
+          src={currentUser.profilePicture || formData.profilePicture}
           alt="Profile Picture"
         />
         <div className="text-red-700 text-center m-2">
@@ -125,26 +159,40 @@ const handleSubmit = async (e) => {
             " "
           )}
         </div>
-        <input onChange={handleUpdate}
+        <input
+          onChange={handleUpdate}
           defaultValue={currentUser.username}
           type="text"
           placeholder="Username"
         />
-        <input onChange={handleUpdate}
+        <input
+          onChange={handleUpdate}
           defaultValue={currentUser.email}
           type="email"
           placeholder="Email"
         />
         <input onChange={handleUpdate} type="password" placeholder="Password" />
-        <button type="submit" className="bg-slate-600 text-white rounded p-2 self-center w-full uppercase">
-        { loading ? "Loading..." : "Update"}
+        <button
+          type="submit"
+          className="bg-slate-600 text-white rounded p-2 self-center w-full uppercase"
+        >
+          {loading ? "Loading..." : "Update"}
         </button>
         <div className="flex justify-between m-2 text-red-700">
-          <button className="">Delete account</button>
-          <button className="rounded p-2 self-center w-1/4">Sign Out</button>
+          <button onClick={handleDelete} className="">
+            Delete account
+          </button>
+          <button
+            onClick={handleSignOut}
+            className="rounded p-2 self-center w-1/4"
+          >
+            Sign Out
+          </button>
         </div>
         <p className="text-red-600 ">{error && "Something went wrong!"}</p>
-        <p className="text-green-600 ">{updateWorks && "User updated successfully"}</p>
+        <p className="text-green-600 ">
+          {updateWorks && "User updated successfully"}
+        </p>
       </form>
     </div>
   );
