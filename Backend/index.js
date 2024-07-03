@@ -12,20 +12,20 @@ dotenv.config();
 const app = express();
 
 mongoose
-  .connect(process.env.MONGO)
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.log("Failed to connect to MongoDB", err);
-  });
+.connect(process.env.MONGO)
+.then(() => {
+  console.log("Connected to MongoDB");
+})
+.catch((err) => {
+  console.log("Failed to connect to MongoDB", err);
+});
+const directoryName = path.resolve();
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
 app.use(cors());
-const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, "client/dist")));
+app.use(express.static(path.join(directoryName, "client/dist")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
