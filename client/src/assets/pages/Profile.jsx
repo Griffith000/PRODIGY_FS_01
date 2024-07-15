@@ -19,6 +19,7 @@ import {
   deleteUserSuccess,
   signOut,
 } from "../../redux/user/userSlice";
+import axios from "axios";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -68,8 +69,11 @@ const Profile = () => {
   const handleUpdate = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+  console.log(currentUser);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
+
     try {
       dispatch(updateUserStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -131,6 +135,7 @@ const Profile = () => {
           onChange={(e) => {
             setImage(e.target.files[0]);
           }}
+          id="profilePicture"
         />
 
         {/* firebase storage rules 
@@ -141,7 +146,7 @@ const Profile = () => {
         <img
           className="h-20 w-20 rounded-full self-center m-3 cursor-pointer object-cover "
           onClick={() => fileRef.current.click()}
-          src={currentUser.profilePicture || formData.profilePicture}
+          src={formData.profilePicture || currentUser.profilePicture}
           alt="Profile Picture"
         />
         <div className="text-red-700 text-center m-2">
@@ -164,14 +169,21 @@ const Profile = () => {
           defaultValue={currentUser.username}
           type="text"
           placeholder="Username"
+          id="username"
         />
         <input
           onChange={handleUpdate}
           defaultValue={currentUser.email}
           type="email"
           placeholder="Email"
+          id="email"
         />
-        <input onChange={handleUpdate} type="password" placeholder="Password" />
+        <input
+          onChange={handleUpdate}
+          type="password"
+          placeholder="Password"
+          id="password"
+        />
         <button
           type="submit"
           className="bg-slate-600 text-white rounded p-2 self-center w-full uppercase"
