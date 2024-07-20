@@ -69,11 +69,8 @@ const Profile = () => {
   const handleUpdate = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
-  console.log(currentUser);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-
     try {
       dispatch(updateUserStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -190,13 +187,13 @@ const Profile = () => {
         >
           {loading ? "Loading..." : "Update"}
         </button>
-        <div className="flex justify-between m-2 text-red-700">
-          <button onClick={handleDelete} className="">
+        <div className="flex justify-between m-3 ">
+          <button onClick={handleDelete} className="text-red-700 border border-red-200 rounded-lg px-2 shadow-sm ">
             Delete account
           </button>
           <button
             onClick={handleSignOut}
-            className="rounded p-2 self-center w-1/4"
+            className=" p-2 self-center w-1/4 text-black border-slate-400 rounded-lg px-2 shadow-sm"
           >
             Sign Out
           </button>

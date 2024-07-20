@@ -44,7 +44,7 @@ const SignUp = () => {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center max-w-md mx-auto my-auto "
       >
-        <div className="text-4xl m-7 font-semibold text-slate-700 text-center  ">
+        <div className="text-4xl m-7 font-semibold text-black text-center  ">
           Sign Up
         </div>
         <input

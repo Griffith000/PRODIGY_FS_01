@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux'
 const Header = () => {
   const currentUser  = useSelector((state) => state.user.user)
   return (
-    <div className="bg-slate-600 text-white text-xl p-4 shadow-lg ">
+    <div className="bg-white text-black text-xl p-4 shadow-lg ">
       <div className="flex justify-between items-center p-3 maw-w-5xl mx-auto">
         <Link to="/">
           <div className="font-bold">Auth App</div>
