@@ -6,10 +6,13 @@ const initialState = {
   error: false,
 };
 
+
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    resetUserState: () => initialState,
+
     signInStart: (state) => {
       state.loading = true;
     },
@@ -66,5 +69,6 @@ export const {
   deleteUserSuccess,
   deleteUserFail,
   signOut,
+  resetUserState,
 } = userSlice.actions;
 export default userReducer;
