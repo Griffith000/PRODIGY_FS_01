@@ -3,12 +3,12 @@
 This full-stack web application is developed using the MERN stack, which includes MongoDB, Express, React, and Node.js. It features a robust authentication system allowing users to sign up, log in, and log out. Access to certain routes is restricted, available only to authenticated users through private routes.
 
 ## Features
--**Authentication:**:Secure user authentication using JSON Web Tokens (JWT).
-- **Private routes:**: Access to certain routes is restricted to authenticated users.
-- **State Management:**:Utilized Redux Toolkit for efficient state handling.
-- **Document uploads:**: Integrated Firebase Storage for managing user document uploads.
-- **Sorting and Filtering:**: Users can sort and filter products via categories, making it easy to find exactly what they need.
-- **Google OAuth:**: Added as an alternative sign-in method for users.
+- **Authentication**: Secure user authentication using JSON Web Tokens (JWT).
+- **Private routes**: Access to certain routes is restricted to authenticated users.
+- **State Management**:Utilized Redux Toolkit for efficient state handling.
+- **Document uploads**: Integrated Firebase Storage for managing user document uploads.
+- **Sorting and Filtering**: Users can sort and filter products via categories, making it easy to find exactly what they need.
+- **Google OAuth**: Added as an alternative sign-in method for users.
   
 ## Tech Stack
 
