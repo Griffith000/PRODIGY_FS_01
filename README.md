@@ -5,7 +5,7 @@ This full-stack web application is developed using the MERN stack, which include
 ## Features
 - **Authentication**: Secure user authentication using JSON Web Tokens (JWT).
 - **Private routes**: Access to certain routes is restricted to authenticated users.
-- **State Management**:Utilized Redux Toolkit for efficient state handling.
+- **State Management**: Utilized Redux Toolkit for efficient state handling.
 - **Document uploads**: Integrated Firebase Storage for managing user document uploads.
 - **Sorting and Filtering**: Users can sort and filter products via categories, making it easy to find exactly what they need.
 - **Google OAuth**: Added as an alternative sign-in method for users.
@@ -31,4 +31,5 @@ To configure the environment variables for the project, follow these steps:
 `DATABASE_URL`
 `JWT_SECRET`
 
-## Visit demo : https://mern-auth-eb4g.onrender.com
+## Visit demo : 
+  https://mern-auth-eb4g.onrender.com
